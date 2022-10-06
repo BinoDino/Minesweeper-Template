@@ -15,7 +15,7 @@ function createGrid(width, height){
     for (i = 0; i < height; i++){
         html += "<tr>";
         for (j = 0; j < width; j++){
-            html += "<td><button class='cell-btn'></button></td>";
+            html += "<td><button onclick='checkIfMine(" + j +","+ i +")' class='cell-btn'></button></td>";
             CellStorage[String(j)+'_'+String(i)] = new cell(j,i);
         }
         html += "</tr>";
@@ -48,7 +48,6 @@ function assignMines(n, width, height){
                     //limit values to grid
                     if(k >= 0 && k<width){
                         if(j >= 0 && j<height){
-                            console.log(k,j);
                             //no counter increasing for the mine itself
                             if(!(k == x && j == y)){
                                 CellStorage[String(k)+'_'+String(j)].counter += 1;
@@ -60,6 +59,16 @@ function assignMines(n, width, height){
             }
         }
     }
+}
+
+function checkIfMine(x,y){
+    if(CellStorage[String(x)+'_'+String(y)]['mine']){
+        gameContainer = document.getElementById('gameContainer');
+        gameContainer.classList.remove('bg-dark');
+        gameContainer.classList.add('bg-danger');
+        gameContainer.innerHTML = "<p class='text-center p-3'>You clicked on a mine. Game lost.</p>";
+    }
+
 }
 
 document.getElementById('startGame').addEventListener('click',function(){
