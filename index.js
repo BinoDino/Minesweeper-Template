@@ -1,15 +1,15 @@
 //store cells
 CellStorage={};
 
-//class for cells
+//constructing cells
 function cell(x,y){
         this.x = x;
         this.y = y;
         this.mine = false;
-        this.cell_counter = 0;
+        this.counter = 0;
 };
 
-// create grid
+// create grid + corresponding cells
 function createGrid(width, height){
     html="";
     for (i = 0; i < height; i++){
@@ -23,6 +23,44 @@ function createGrid(width, height){
     document.getElementById('gameContainer').innerHTML = html;
 }
 
+//randomisation function
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
+//assign mines to cells
+function assignMines(n, width, height){
+    var arrX = [];
+    var arrY = [];
+    i = 0;
+    while(i < n){
+        x = randomIntFromInterval(0, width-1);
+        y = randomIntFromInterval(0, height-1);
+        //prevent double assignment
+        if(!arrX.includes(x) && !arrY.includes(y)){
+            i++;
+            arrX.push(x);
+            arrY.push(y);
+            CellStorage[String(x)+'_'+String(y)].mine = true;
+            //set counters of adjacent cells
+            for(j = y-1; j < y+2 ; j++){
+                for(k = x-1; k < x+2; k++){
+                    //limit values to grid
+                    if(k >= 0 && k<width){
+                        if(j >= 0 && j<height){
+                            console.log(k,j);
+                            //no counter increasing for the mine itself
+                            if(!(k == x && j == y)){
+                                CellStorage[String(k)+'_'+String(j)].counter += 1;
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}
 
 document.getElementById('startGame').addEventListener('click',function(){
     width = document.getElementById('width').value;
@@ -30,4 +68,5 @@ document.getElementById('startGame').addEventListener('click',function(){
     //Opened cells counter
     Game_Counter = width*height;
     createGrid(width, height);
+    assignMines(document.getElementById('numberOfMines').value, width, height);
 });
