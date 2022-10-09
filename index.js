@@ -81,8 +81,8 @@ function revealCells (x,y){
     //check if cell is a 0
     if(CellStorage[String(x)+'_'+String(y)]['counter']==0){
         //reveal adjacent cells
-        for(i = y-1; i < y+2 ; i++){
-            for(j = x-1; j < x+2; j++){
+        for(let i = y-1; i < y+2 ; i++){
+            for(let j = x-1; j < x+2; j++){
                 //limit values to grid
                 if(j >= 0 && j<width){
                     if(i >= 0 && i<height){
@@ -97,7 +97,7 @@ function revealCells (x,y){
                                 //recursion: delay to prevent "Maximum call stack size exceeded" error
                                 setTimeout(function (){
                                     revealCells(j,i);      
-                                }, 1000);
+                                }, 250);
                                 
                             }
                             CellStorage[id].revealed = true;
@@ -110,6 +110,8 @@ function revealCells (x,y){
     }else{
         //cells > 0 => only reveal cell itself
         document.getElementById(String(x)+'_'+String(y)).innerHTML = CellStorage[String(x)+'_'+String(y)]['counter'];
+        CellStorage[String(x)+'_'+String(y)].revealed = true;
+        Game_Counter = Game_Counter - 1;
     }
 }
 

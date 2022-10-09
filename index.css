@@ -9,6 +9,11 @@
     background-color: gray;
 }
 
+table {
+    empty-cells:show;
+}
+
 td{
     width:25px;
+    line-height:25px;
 }
