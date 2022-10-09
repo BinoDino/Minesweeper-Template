@@ -65,13 +65,18 @@ function assignMines(n, width, height){
 
 //check if cell is a mine
 function checkIfMine(x,y){
+    gameContainer = document.getElementById('gameContainer');
     if(CellStorage[String(x)+'_'+String(y)]['mine']){
-        gameContainer = document.getElementById('gameContainer');
         gameContainer.classList.remove('bg-dark');
         gameContainer.classList.add('bg-danger');
         gameContainer.innerHTML = "<p class='text-center p-3'>You clicked on a mine. Game lost.</p>";
     } else {
         revealCells(x,y);
+        if(Game_Counter == document.getElementById('numberOfMines').value){
+            gameContainer.classList.remove('bg-dark');
+            gameContainer.classList.add('bg-success');
+            gameContainer.innerHTML = "<p class='text-center p-3'>Well done! Game won.</p>";
+        }
     }
 
 }
