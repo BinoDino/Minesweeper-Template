@@ -8,3 +8,7 @@
 .cell-btn:hover{
     background-color: gray;
 }
+
+td{
+    width:25px;
+}

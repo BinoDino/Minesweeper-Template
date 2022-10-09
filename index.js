@@ -7,19 +7,21 @@ function cell(x,y){
         this.y = y;
         this.mine = false;
         this.counter = 0;
+        this.revealed = false;
 };
 
 // create grid + corresponding cells
 function createGrid(width, height){
-    html="";
+    html="<table class='bg-dark text-white'>";
     for (i = 0; i < height; i++){
         html += "<tr>";
         for (j = 0; j < width; j++){
-            html += "<td><button onclick='checkIfMine(" + j +","+ i +")' class='cell-btn'></button></td>";
+            html += "<td class='text-center' id="+j+"_"+i+"><button onclick='checkIfMine(" + j +","+ i +")' class='cell-btn'></button></td>";
             CellStorage[String(j)+'_'+String(i)] = new cell(j,i);
         }
         html += "</tr>";
     }
+    html+="</table>";
     document.getElementById('gameContainer').innerHTML = html;
 }
 
@@ -61,20 +63,60 @@ function assignMines(n, width, height){
     }
 }
 
+//check if cell is a mine
 function checkIfMine(x,y){
     if(CellStorage[String(x)+'_'+String(y)]['mine']){
         gameContainer = document.getElementById('gameContainer');
         gameContainer.classList.remove('bg-dark');
         gameContainer.classList.add('bg-danger');
         gameContainer.innerHTML = "<p class='text-center p-3'>You clicked on a mine. Game lost.</p>";
+    } else {
+        revealCells(x,y);
     }
 
+}
+
+//revealing cells
+function revealCells (x,y){
+    //check if cell is a 0
+    if(CellStorage[String(x)+'_'+String(y)]['counter']==0){
+        //reveal adjacent cells
+        for(i = y-1; i < y+2 ; i++){
+            for(j = x-1; j < x+2; j++){
+                //limit values to grid
+                if(j >= 0 && j<width){
+                    if(i >= 0 && i<height){
+                        var id = String(j)+'_'+String(i);
+                        //check if cell already revealed
+                        if(!CellStorage[id]['revealed']){
+                            if(CellStorage[id]['counter']>0){
+                                document.getElementById(id).innerHTML = CellStorage[id]['counter'];
+                            } else{
+                                document.getElementById(id).innerHTML = "";
+
+                                //recursion: delay to prevent "Maximum call stack size exceeded" error
+                                setTimeout(function (){
+                                    revealCells(j,i);      
+                                }, 1000);
+                                
+                            }
+                            CellStorage[id].revealed = true;
+                            Game_Counter = Game_Counter - 1;
+                        }
+                    }
+                }
+            }
+        }
+    }else{
+        //cells > 0 => only reveal cell itself
+        document.getElementById(String(x)+'_'+String(y)).innerHTML = CellStorage[String(x)+'_'+String(y)]['counter'];
+    }
 }
 
 document.getElementById('startGame').addEventListener('click',function(){
     width = document.getElementById('width').value;
     height = document.getElementById('height').value;
-    //Opened cells counter
+    //Count cells that are not revealed yet
     Game_Counter = width*height;
     createGrid(width, height);
     assignMines(document.getElementById('numberOfMines').value, width, height);
