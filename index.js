@@ -32,17 +32,15 @@ function randomIntFromInterval(min, max) { // min and max included
 
 //assign mines to cells
 function assignMines(n, width, height){
-    var arrX = [];
-    var arrY = [];
+    var arrXY = [];
     var i = 0;
     while(i < n){
         x = randomIntFromInterval(0, width-1);
         y = randomIntFromInterval(0, height-1);
         //prevent double assignment
-        if(!arrX.includes(x) && !arrY.includes(y)){
+        if(!arrXY.includes(String(x)+'_'+String(y))){
             i++;
-            arrX.push(x);
-            arrY.push(y);
+            arrXY.push(String(x)+'_'+String(y));
             cellStorage[String(x)+'_'+String(y)].mine = true;
             //set counters of adjacent cells
             for(j = y-1; j < y+2 ; j++){
@@ -57,8 +55,7 @@ function assignMines(n, width, height){
                         }
                     }
                 }
-                
-            }
+            }  
         }
     }
 }
@@ -156,7 +153,7 @@ document.getElementById('startGame').addEventListener('click',function(){
             }else{
                 errorMessage.innerText = 'Height should be an integer between 1 and 30.'
             }
-            if(!(n > 0 && n <= (width * height)/5)){
+            if(n < 0 || n > (width * height)/5){
                 n=Math.round((width * height)/5);
                 document.getElementById('numberOfMines').value = n;
                 errorMessage.innerText = 'Number of Mines was set to '+ n +'.'
