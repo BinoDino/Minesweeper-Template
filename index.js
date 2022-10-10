@@ -12,7 +12,7 @@ function cell(x,y){
 
 // create grid + corresponding cells
 function createGrid(width, height){
-    html="<table class='bg-dark text-white'>";
+    var html="<table class='bg-dark text-white'>";
     for (i = 0; i < height; i++){
         html += "<tr>";
         for (j = 0; j < width; j++){
@@ -34,7 +34,7 @@ function randomIntFromInterval(min, max) { // min and max included
 function assignMines(n, width, height){
     var arrX = [];
     var arrY = [];
-    i = 0;
+    var i = 0;
     while(i < n){
         x = randomIntFromInterval(0, width-1);
         y = randomIntFromInterval(0, height-1);
@@ -65,18 +65,10 @@ function assignMines(n, width, height){
 
 //check if cell is a mine
 function checkIfMine(x,y){
-    gameContainer = document.getElementById('gameContainer');
     if(CellStorage[String(x)+'_'+String(y)]['mine']){
-        gameContainer.classList.remove('bg-dark');
-        gameContainer.classList.add('bg-danger');
-        gameContainer.innerHTML = "<p class='text-center p-3'>You clicked on a mine. Game lost.</p>";
+        document.getElementById('gameMessage').innerHTML = "<p class='text-center text-danger p-3'>You clicked on a mine. Game lost.</p>";
     } else {
         revealCells(x,y);
-        if(Game_Counter == document.getElementById('numberOfMines').value){
-            gameContainer.classList.remove('bg-dark');
-            gameContainer.classList.add('bg-success');
-            gameContainer.innerHTML = "<p class='text-center p-3'>Well done! Game won.</p>";
-        }
     }
 
 }
@@ -118,13 +110,44 @@ function revealCells (x,y){
         CellStorage[String(x)+'_'+String(y)].revealed = true;
         Game_Counter = Game_Counter - 1;
     }
+    //check if game is won
+    if(Game_Counter == n){
+        document.getElementById('gameMessage').innerHTML = "<p class='text-center text-success p-3'>Well done! Game won.</p>";
+    }
 }
 
+
+
+//Start Game
 document.getElementById('startGame').addEventListener('click',function(){
-    width = document.getElementById('width').value;
-    height = document.getElementById('height').value;
-    //Count cells that are not revealed yet
-    Game_Counter = width*height;
-    createGrid(width, height);
-    assignMines(document.getElementById('numberOfMines').value, width, height);
+    width = parseInt(document.getElementById('width').value);
+    height = parseInt(document.getElementById('height').value);
+    n = parseInt(document.getElementById('numberOfMines').value);
+    var errorMessage = document.getElementById('errorMessage');
+    errorMessage.innerText = '';
+    document.getElementById('gameMessage').innerHTML='';
+    if(isNaN(width)|| isNaN(height) || isNaN(n) ){
+        errorMessage.innerText = 'Only integers are accepted as inputs.'
+    }else{
+        //Count cells that are not revealed yet
+        Game_Counter = width*height;
+
+        //check for min and max values
+        if(width > 0 && width <= 24){
+            if(height > 0 && height <= 30){
+                createGrid(width, height);
+            }else{
+                errorMessage.innerText = 'Height should be an integer between 1 and 30.'
+            }
+            if(!(n > 0 && n <= (width * height)/5)){
+                n=Math.round((width * height)/5);
+                document.getElementById('numberOfMines').value = n;
+                errorMessage.innerText = 'Number of Mines was set to '+ n +'.'
+            }
+            assignMines(n, width, height);
+        }else{
+            errorMessage.innerText = 'Width should be an integer between 1 and 24.'
+        }
+        
+    }
 });
