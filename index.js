@@ -66,7 +66,7 @@ function assignMines(n, width, height){
 //check if cell is a mine
 function checkIfMine(x,y){
     if(cellStorage[String(x)+'_'+String(y)]['mine']){
-        document.getElementById('gameMessage').innerHTML = "<p class='text-center text-danger p-3'>You clicked on a mine. Game lost.</p>";
+        document.getElementById('gameMessage').innerHTML = "<h5 class='silkscreen text-center text-danger p-3'>You clicked on a mine. Game lost.</h5>";
         revealAllCells();
     } else {
         revealCells(x,y);
@@ -113,7 +113,7 @@ function revealCells (x,y){
     }
     //check if game is won
     if(Game_Counter == n){
-        document.getElementById('gameMessage').innerHTML = "<p class='text-center text-success p-3'>Well done! Game won.</p>";
+        document.getElementById('gameMessage').innerHTML = "<h5 class='text-center silkscreen text-success p-3'>Well done! Game won.</h5>";
         revealAllCells();
     }
 }

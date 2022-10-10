@@ -1,3 +1,16 @@
+/* silkscreen-regular - latin */
+@font-face {
+    font-family: 'Silkscreen';
+    font-style: normal;
+    font-weight: 400;
+    src: url('fonts/silkscreen-v1-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+         url('fonts/silkscreen-v1-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('fonts/silkscreen-v1-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('fonts/silkscreen-v1-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('fonts/silkscreen-v1-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('fonts/silkscreen-v1-latin-regular.svg#Silkscreen') format('svg'); /* Legacy iOS */
+}
 a{
     text-decoration: none;
     color:black;
@@ -5,9 +18,15 @@ a{
 a:hover{
     text-decoration: underline;
 }
-
 label{
     padding: 0.375rem 0.75rem;
+}
+table {
+    empty-cells:show;
+}
+td{
+    width:27px;
+    height:31px;
 }
 .cell-btn{
     width:25px;
@@ -19,12 +38,18 @@ label{
 .cell-btn:hover{
     background-color: gray;
 }
-
-table {
-    empty-cells:show;
+.silkscreen{
+    font-family: 'Silkscreen', 'sans-serif';
 }
-
-td{
-    width:27px;
-    height:31px;
+.rotate-45{
+    transform: rotate(45deg);
+}
+.accordion-button::after {
+    background-image: url("img/up.svg");
+}
+.accordion-button:hover::after {
+    background-image: url("img/up.svg");
+}
+.accordion-button:not(.collapsed)::after {
+    background-image: url("img/up.svg");
 }
