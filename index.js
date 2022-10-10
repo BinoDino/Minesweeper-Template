@@ -67,6 +67,7 @@ function assignMines(n, width, height){
 function checkIfMine(x,y){
     if(CellStorage[String(x)+'_'+String(y)]['mine']){
         document.getElementById('gameMessage').innerHTML = "<p class='text-center text-danger p-3'>You clicked on a mine. Game lost.</p>";
+        revealAllCells();
     } else {
         revealCells(x,y);
     }
@@ -116,7 +117,22 @@ function revealCells (x,y){
     }
 }
 
-
+//revealing all cells
+function revealAllCells(){
+   for(const key in CellStorage){
+        if(!CellStorage[key]['revealed']){
+            if(CellStorage[key]['mine']){
+                document.getElementById(String(key)).innerHTML = '<img src="img/explosion.png" width="25px" height="25px"/>';
+            }else{
+                if(CellStorage[key]['counter']>0){
+                    document.getElementById(String(key)).innerHTML = CellStorage[key]['counter'];
+                }else{
+                    document.getElementById(String(key)).innerHTML = '';
+                }
+            }
+        }
+   }
+}
 
 //Start Game
 document.getElementById('startGame').addEventListener('click',function(){
