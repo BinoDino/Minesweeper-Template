@@ -1,5 +1,5 @@
 //store cells
-CellStorage={};
+cellStorage={};
 
 //constructing cells
 function cell(x,y){
@@ -17,7 +17,7 @@ function createGrid(width, height){
         html += "<tr>";
         for (j = 0; j < width; j++){
             html += "<td class='text-center' id="+j+"_"+i+"><button onclick='checkIfMine(" + j +","+ i +")' class='cell-btn'></button></td>";
-            CellStorage[String(j)+'_'+String(i)] = new cell(j,i);
+            cellStorage[String(j)+'_'+String(i)] = new cell(j,i);
         }
         html += "</tr>";
     }
@@ -43,7 +43,7 @@ function assignMines(n, width, height){
             i++;
             arrX.push(x);
             arrY.push(y);
-            CellStorage[String(x)+'_'+String(y)].mine = true;
+            cellStorage[String(x)+'_'+String(y)].mine = true;
             //set counters of adjacent cells
             for(j = y-1; j < y+2 ; j++){
                 for(k = x-1; k < x+2; k++){
@@ -52,7 +52,7 @@ function assignMines(n, width, height){
                         if(j >= 0 && j<height){
                             //no counter increasing for the mine itself
                             if(!(k == x && j == y)){
-                                CellStorage[String(k)+'_'+String(j)].counter += 1;
+                                cellStorage[String(k)+'_'+String(j)].counter += 1;
                             }
                         }
                     }
@@ -65,7 +65,7 @@ function assignMines(n, width, height){
 
 //check if cell is a mine
 function checkIfMine(x,y){
-    if(CellStorage[String(x)+'_'+String(y)]['mine']){
+    if(cellStorage[String(x)+'_'+String(y)]['mine']){
         document.getElementById('gameMessage').innerHTML = "<p class='text-center text-danger p-3'>You clicked on a mine. Game lost.</p>";
         revealAllCells();
     } else {
@@ -77,7 +77,7 @@ function checkIfMine(x,y){
 //revealing cells
 function revealCells (x,y){
     //check if cell is a 0
-    if(CellStorage[String(x)+'_'+String(y)]['counter']==0){
+    if(cellStorage[String(x)+'_'+String(y)]['counter']==0){
         //reveal adjacent cells
         for(let i = y-1; i < y+2 ; i++){
             for(let j = x-1; j < x+2; j++){
@@ -86,9 +86,9 @@ function revealCells (x,y){
                     if(i >= 0 && i<height){
                         var id = String(j)+'_'+String(i);
                         //check if cell already revealed
-                        if(!CellStorage[id]['revealed']){
-                            if(CellStorage[id]['counter']>0){
-                                document.getElementById(id).innerHTML = CellStorage[id]['counter'];
+                        if(!cellStorage[id]['revealed']){
+                            if(cellStorage[id]['counter']>0){
+                                document.getElementById(id).innerHTML = cellStorage[id]['counter'];
                             } else{
                                 document.getElementById(id).innerHTML = "";
 
@@ -98,7 +98,7 @@ function revealCells (x,y){
                                 }, 250);
                                 
                             }
-                            CellStorage[id].revealed = true;
+                            cellStorage[id].revealed = true;
                             Game_Counter = Game_Counter - 1;
                         }
                     }
@@ -107,25 +107,26 @@ function revealCells (x,y){
         }
     }else{
         //cells > 0 => only reveal cell itself
-        document.getElementById(String(x)+'_'+String(y)).innerHTML = CellStorage[String(x)+'_'+String(y)]['counter'];
-        CellStorage[String(x)+'_'+String(y)].revealed = true;
+        document.getElementById(String(x)+'_'+String(y)).innerHTML = cellStorage[String(x)+'_'+String(y)]['counter'];
+        cellStorage[String(x)+'_'+String(y)].revealed = true;
         Game_Counter = Game_Counter - 1;
     }
     //check if game is won
     if(Game_Counter == n){
         document.getElementById('gameMessage').innerHTML = "<p class='text-center text-success p-3'>Well done! Game won.</p>";
+        revealAllCells();
     }
 }
 
 //revealing all cells
 function revealAllCells(){
-   for(const key in CellStorage){
-        if(!CellStorage[key]['revealed']){
-            if(CellStorage[key]['mine']){
+   for(const key in cellStorage){
+        if(!cellStorage[key]['revealed']){
+            if(cellStorage[key]['mine']){
                 document.getElementById(String(key)).innerHTML = '<img src="img/explosion.png" width="25px" height="25px"/>';
             }else{
-                if(CellStorage[key]['counter']>0){
-                    document.getElementById(String(key)).innerHTML = CellStorage[key]['counter'];
+                if(cellStorage[key]['counter']>0){
+                    document.getElementById(String(key)).innerHTML = cellStorage[key]['counter'];
                 }else{
                     document.getElementById(String(key)).innerHTML = '';
                 }
@@ -134,7 +135,7 @@ function revealAllCells(){
    }
 }
 
-//Start Game
+//start Game
 document.getElementById('startGame').addEventListener('click',function(){
     width = parseInt(document.getElementById('width').value);
     height = parseInt(document.getElementById('height').value);
@@ -145,7 +146,7 @@ document.getElementById('startGame').addEventListener('click',function(){
     if(isNaN(width)|| isNaN(height) || isNaN(n) ){
         errorMessage.innerText = 'Only integers are accepted as inputs.'
     }else{
-        //Count cells that are not revealed yet
+        //count cells that are not revealed yet
         Game_Counter = width*height;
 
         //check for min and max values
