@@ -1,23 +1,20 @@
-//store cells
-cellStorage={};
-
 //constructing cells
-function cell(x,y){
-        this.x = x;
-        this.y = y;
+class Cell {
+    constructor() {
         this.mine = false;
         this.counter = 0;
         this.revealed = false;
+    }
 };
 
 // create grid + corresponding cells
-function createGrid(width, height){
+function createGrid(){
     var html="<table class='bg-dark text-white'>";
     for (i = 0; i < height; i++){
         html += "<tr>";
         for (j = 0; j < width; j++){
             html += "<td class='text-center' id="+j+"_"+i+"><button onclick='checkIfMine(" + j +","+ i +")' class='cell-btn'></button></td>";
-            cellStorage[String(j)+'_'+String(i)] = new cell(j,i);
+            cellStorage[String(j)+'_'+String(i)] = new Cell();
         }
         html += "</tr>";
     }
@@ -25,13 +22,13 @@ function createGrid(width, height){
     document.getElementById('gameContainer').innerHTML = html;
 }
 
-//randomisation function
-function randomIntFromInterval(min, max) { // min and max included 
+//randomisation function (min and max included)
+function randomIntFromInterval(min, max) { 
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
 //assign mines to cells
-function assignMines(n, width, height){
+function assignMines(){
     var arrXY = [];
     var i = 0;
     while(i < n){
@@ -88,7 +85,6 @@ function revealCells (x,y){
                                 document.getElementById(id).innerHTML = cellStorage[id]['counter'];
                             } else{
                                 document.getElementById(id).innerHTML = "";
-
                                 //recursion: delay to prevent "Maximum call stack size exceeded" error
                                 setTimeout(function (){
                                     revealCells(j,i);      
@@ -117,48 +113,52 @@ function revealCells (x,y){
 
 //revealing all cells
 function revealAllCells(){
-   for(const key in cellStorage){
+   for(let key in cellStorage){
         if(!cellStorage[key]['revealed']){
             if(cellStorage[key]['mine']){
-                document.getElementById(String(key)).innerHTML = '<img src="img/explosion.png" width="25px" height="25px"/>';
+                document.getElementById(key).innerHTML = '<img src="img/explosion.png" width="25px" height="25px"/>';
             }else{
                 if(cellStorage[key]['counter']>0){
-                    document.getElementById(String(key)).innerHTML = cellStorage[key]['counter'];
+                    document.getElementById(key).innerHTML = cellStorage[key]['counter'];
                 }else{
-                    document.getElementById(String(key)).innerHTML = '';
+                    document.getElementById(key).innerHTML = '';
                 }
             }
         }
    }
 }
 
-//start Game
+//start game on click
 document.getElementById('startGame').addEventListener('click',function(){
+    //store cells
+    cellStorage={};
+    //get input values
     width = parseInt(document.getElementById('width').value);
     height = parseInt(document.getElementById('height').value);
     n = parseInt(document.getElementById('numberOfMines').value);
+    //delete messages of former games
     var errorMessage = document.getElementById('errorMessage');
     errorMessage.innerText = '';
     document.getElementById('gameMessage').innerHTML='';
+    //check if input is valid
     if(isNaN(width)|| isNaN(height) || isNaN(n) ){
         errorMessage.innerText = 'Only integers are accepted as inputs.'
     }else{
         //count cells that are not revealed yet
         Game_Counter = width*height;
-
         //check for min and max values
         if(width > 0 && width <= 24){
             if(height > 0 && height <= 30){
-                createGrid(width, height);
+                createGrid();
             }else{
                 errorMessage.innerText = 'Height should be an integer between 1 and 30.'
             }
             if(n < 0 || n > (width * height)/5){
-                n=Math.round((width * height)/5);
+                n=Math.floor((width * height)/5);
                 document.getElementById('numberOfMines').value = n;
                 errorMessage.innerText = 'Number of Mines was set to '+ n +'.'
             }
-            assignMines(n, width, height);
+            assignMines();
         }else{
             errorMessage.innerText = 'Width should be an integer between 1 and 24.'
         }
